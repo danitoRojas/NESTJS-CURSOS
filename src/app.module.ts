@@ -7,29 +7,43 @@ import { ProductosModule } from './productos/productos.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GatosModule } from './gatos/gatos.module';
 import { ConfigModule } from '@nestjs/config';
+import { EstudiantesModule } from './estudiantes/estudiantes.module';
+import { ColegiosModule } from './colegios/colegios.module';
+import { MateriasModule } from './materias/materias.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
   imports: [
-    
-    ConfigModule.forRoot({isGlobal: true}),
+
+    ConfigModule.forRoot({ isGlobal: true }),
 
     TypeOrmModule.forRoot({
-      type:"mysql",
-      host:"localhost",
-      port:3307,
-      username:"user_crud",
-      password:"root",
-      database:"db_crud",
-      autoLoadEntities:true,
-      synchronize: true
+      type: "postgres",
+      host: process.env.POSTGRES_HOST,
+      port: parseInt(process.env.POSTGRES_PORT || "5432"),
+      username: process.env.POSTGRES_USERNAME,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DATABASE,
+      autoLoadEntities: true,
+      synchronize: true,
+      ssl: process.env.POSTGRES_SSL === "true",
+      extra: {
+        ssl:
+          process.env.POSTGRES_SSL === "true"
+            ? {
+              rejectUnauthorized: false,
+            }
+            : null,
+      },
     }),
-    
-    TareasModule, 
-    ProductosModule, GatosModule
-  
+
+    TareasModule,
+    ProductosModule, GatosModule, EstudiantesModule, ColegiosModule, MateriasModule, UsersModule, AuthModule
+
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
